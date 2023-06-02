@@ -2,20 +2,25 @@
 const { 
   createUser, 
   createActivity,
-  // createRoutine,
+  createRoutine,
   // getAllActivities,
   // getRoutinesWithoutActivities,
   // addActivityToRoutine
 } = require('./');
 const client  = require("./client");
 
+
 async function dropTables() {
   console.log("Dropping All Tables...")
   // drop all tables, in the correct order
   try {
     await client.query(`
-      DROP TABLE IF EXISTS users;
-      DROP TABLE IF EXISTS activities;
+      DROP TABLE IF EXISTS routine_activity;  
+      DROP TABLE IF EXISTS routines;        
+      DROP TABLE IF EXISTS activities;     
+      DROP TABLE IF EXISTS users;      
+
+
     `); 
   } 
   catch (error) {
@@ -41,6 +46,20 @@ async function createTables() {
         name VARCHAR(255) UNIQUE NOT NULL,
         description TEXT NOT NULL
       );
+      CREATE TABLE routines(
+        id SERIAL PRIMARY KEY,
+        "creatorId" INTEGER REFERENCES users(id),
+        "isPublic" BOOLEAN DEFAULT false,
+        name VARCHAR(255) UNIQUE NOT NULL,
+        goal TEXT NOT NULL
+      );
+         CREATE TABLE routine_activity(
+          id SERIAL PRIMARY KEY,
+          "routineId" INTEGER REFERENCES routines(id),
+          "activityId" INTEGER REFERENCES activities(id),
+          duration INTEGER,
+          count INTEGER
+        );      
     `); 
   } 
   catch (error) {
