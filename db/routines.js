@@ -23,12 +23,14 @@ async function getRoutinesWithoutActivities() {}
 
 async function getAllRoutines() {
   try{
-    const {rows:[routines] } = await client.query(
+    const {rows } = await client.query(
       `
-      SELECT * FROM routines;
+      SELECT *  
+      FROM routines;
+      
       `
     );
-      return routines;
+      return rows;
   }
   catch(error){    
     console.log(error);
