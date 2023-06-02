@@ -64,13 +64,9 @@ const getUser = async ({ username, password }) => {
     const isValid = await bcrypt.compare(password, hashedPassword)
 
     if (isValid) {
-      console.log('Passwords match!');
       delete user.password;
       return user;
-    } else {
-      console.log('Passwords don\'t match');
-    }
-
+    } 
   }
   catch (error) {
     console.log(error);
@@ -81,7 +77,6 @@ const getUser = async ({ username, password }) => {
 
 
 const getUserById = async (userId) => {
-  console.log(userId)
 
   try {
     const { rows: [user] } = await client.query(`
