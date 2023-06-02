@@ -1,7 +1,7 @@
 // require in the database adapter functions as you write them (createUser, createActivity...)
 const { 
   createUser, 
-  // createActivity,
+  createActivity,
   // createRoutine,
   // getAllActivities,
   // getRoutinesWithoutActivities,
@@ -34,6 +34,11 @@ async function createTables() {
         id SERIAL PRIMARY KEY,
         username VARCHAR(255) UNIQUE NOT NULL,
         password VARCHAR(255) NOT NULL
+      );
+      CREATE TABLE activities(
+        id SERIAL PRIMARY KEY,
+        name VARCHAR(255) UNIQUE NOT NULL,
+        description TEXT NOT NULL
       );
     `); 
   } 
@@ -226,4 +231,5 @@ module.exports = {
   rebuildDB,
   dropTables,
   createTables,
+  createActivity
 }
