@@ -15,6 +15,7 @@ async function dropTables() {
   try {
     await client.query(`
       DROP TABLE IF EXISTS users;
+      DROP TABLE IF EXISTS activities;
     `); 
   } 
   catch (error) {
