@@ -143,7 +143,23 @@ async function getPublicRoutinesByUser({ username }) {
 
 }
 
-async function getPublicRoutinesByActivity({ id }) {}
+async function getPublicRoutinesByActivity({ id }) {
+  try{
+    const {rows:[routine] } = await client.query(
+    `
+      SELECT *  
+      FROM routines
+      WHERE id= ${id};
+      `
+    );
+      return routine;
+  }
+  catch(error){    
+    console.log(error);
+    throw error;
+  }
+}
+
 
 async function updateRoutine({ id, ...fields }) {}
 
