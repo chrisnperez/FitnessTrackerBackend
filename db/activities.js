@@ -65,7 +65,27 @@ catch(error){
 }
 
 // used as a helper inside db/routines.js
-async function attachActivitiesToRoutines(routines) {}
+async function attachActivitiesToRoutines(routines) {
+try {
+  const {rows:activities } = await client.query(`
+    SELECT a.* ra.duration, ra.count, ra."routineId" , ra.id AS "routineActivityId"
+    FROM activities a
+    JOIN routine_activities ra
+    ON ra."activityId" = a.id
+    WHERE ra."routineId" IN (${routines.map(routine => routine.id)
+    .join (', ')})
+  
+    `
+  );
+  return activities;
+
+}
+catch(error){    
+  console.log(error);
+  throw error;
+}
+
+}
 
 
 async function updateActivity({ id, ...fields }) {
