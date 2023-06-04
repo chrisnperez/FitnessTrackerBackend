@@ -17,17 +17,37 @@ async function createRoutine({ creatorId, isPublic, name, goal }) {
 
 }
 
-async function getRoutineById(id) {}
+async function getRoutineById(id) {
+  
+}
 
-async function getRoutinesWithoutActivities() {}
+async function getRoutinesWithoutActivities() {
+  try{
+    const {rows } = await client.query(
+    `
+      SELECT *  
+      FROM routines;
+      `
+    );
+      return rows;
+  }
+  catch(error){    
+    console.log(error);
+    throw error;
+  }
+  
+
+}
 
 async function getAllRoutines() {
   try{
     const {rows } = await client.query(
       `
-      SELECT *  
-      FROM routines;
-      
+      SELECT routines.*, users.username AS "creatorName",
+      FROM routines
+      INNER JOIN users
+      ON routines."creatorId"=users.id;
+    
       `
     );
       return rows;

@@ -3,9 +3,9 @@ const {
   createUser, 
   createActivity,
   createRoutine,
-  // getAllActivities,
-  // getRoutinesWithoutActivities,
-  // addActivityToRoutine
+  getAllActivities,
+  getRoutinesWithoutActivities,
+  addActivityToRoutine
 } = require('./');
 const client  = require("./client");
 
@@ -15,7 +15,7 @@ async function dropTables() {
   // drop all tables, in the correct order
   try {
     await client.query(`
-      DROP TABLE IF EXISTS routine_activity;  
+      DROP TABLE IF EXISTS routine_activities;  
       DROP TABLE IF EXISTS routines;        
       DROP TABLE IF EXISTS activities;     
       DROP TABLE IF EXISTS users;      
@@ -51,7 +51,7 @@ async function createTables() {
         name VARCHAR(255) UNIQUE NOT NULL,
         goal TEXT NOT NULL
       );
-         CREATE TABLE routine_activity(
+         CREATE TABLE routine_activities(
           id SERIAL PRIMARY KEY,
           "routineId" INTEGER REFERENCES routines(id),
           "activityId" INTEGER REFERENCES activities(id),
