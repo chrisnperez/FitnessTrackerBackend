@@ -68,7 +68,6 @@ async function getAllRoutines() {
       `
     );
     const workoutStuff = await attachActivitiesToRoutines(routines);
-    console.log(workoutStuff);
       return workoutStuff;
 
   }
@@ -101,9 +100,48 @@ async function getAllPublicRoutines() {
   }
 }
 
-async function getAllRoutinesByUser({ username }) {}
+async function getAllRoutinesByUser({ username }) {
+  try{
+    const {rows:routines } = await client.query(
+      `
+      SELECT r.*, u.username AS "creatorName"
+      FROM routines r
+      INNER JOIN users u
+      ON r."creatorId" = u.id 
+      WHERE u.username = $1;   
+      `
+    ,[username]);
+    const workoutStuff = await attachActivitiesToRoutines(routines);
+      return workoutStuff;
 
-async function getPublicRoutinesByUser({ username }) {}
+  }
+  catch(error){    
+    console.log(error);
+    throw error;
+  }
+}
+
+async function getPublicRoutinesByUser({ username }) {
+  try{
+    const {rows:routines } = await client.query(
+      `
+      SELECT r.*, u.username AS "creatorName"
+      FROM routines r
+      INNER JOIN users u
+      ON r."creatorId" = u.id   
+      WHERE r."isPublic" = true;
+      `
+    );
+    const workoutStuff = await attachActivitiesToRoutines(routines);
+      return workoutStuff;
+
+  }
+  catch(error){    
+    console.log(error);
+    throw error;
+  }
+
+}
 
 async function getPublicRoutinesByActivity({ id }) {}
 
