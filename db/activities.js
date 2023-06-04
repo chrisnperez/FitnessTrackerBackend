@@ -8,7 +8,7 @@ async function createActivity({ name, description }) {
     INSERT INTO activities(name,description)
     VALUES($1,$2)
     RETURNING *;
-    `,[name,description]);  
+    `,[name, description]);  
     
     return activities;
   }

@@ -19,8 +19,6 @@ async function dropTables() {
       DROP TABLE IF EXISTS routines;        
       DROP TABLE IF EXISTS activities;     
       DROP TABLE IF EXISTS users;      
-
-
     `); 
   } 
   catch (error) {
@@ -58,7 +56,8 @@ async function createTables() {
           "routineId" INTEGER REFERENCES routines(id),
           "activityId" INTEGER REFERENCES activities(id),
           duration INTEGER,
-          count INTEGER
+          count INTEGER,
+          UNIQUE("routineId", "activityId")
         );      
     `); 
   } 
