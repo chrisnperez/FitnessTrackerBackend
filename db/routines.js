@@ -16,10 +16,26 @@ async function createRoutine({ creatorId, isPublic, name, goal }) {
   }
 
 }
-
+//this function is not in routines.spec(not being used)
 async function getRoutineById(id) {
+  try{
+    const {rows:[routine] } = await client.query(
+    `
+      SELECT *  
+      FROM routines
+      WHERE id= ${id};
+      `
+    );
+      return routine;
+  }
+  catch(error){    
+    console.log(error);
+    throw error;
+  }
   
+
 }
+
 
 async function getRoutinesWithoutActivities() {
   try{
@@ -45,8 +61,8 @@ async function getAllRoutines() {
       `
       SELECT routines.*, users.username AS "creatorName",
       FROM routines
-      INNER JOIN users
-      ON routines."creatorId"=users.id;
+      JOIN users users ON routines."creatorId" = users.id 
+      WHERE routines."isPublic"= true; 
     
       `
     );
@@ -59,7 +75,24 @@ async function getAllRoutines() {
   
 }
 
-async function getAllPublicRoutines() {}
+async function getAllPublicRoutines() {
+  try{
+    const {rows:routines } = await client.query(
+      `
+      SELECT routines.*, users.username AS "creatorName"
+      FROM routines
+      INNER JOIN users
+      ON routines."creatorId" = users.id
+      WHERE routines."isPublic" = true;
+      `
+    );
+      return routines;
+  }
+  catch(error){    
+    console.log(error);
+    throw error;
+  }
+}
 
 async function getAllRoutinesByUser({ username }) {}
 
