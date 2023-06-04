@@ -1,3 +1,4 @@
+const { attachActivitiesToRoutines } = require("./activities");
 const client = require("./client");
 
 async function createRoutine({ creatorId, isPublic, name, goal }) {
@@ -62,12 +63,14 @@ async function getAllRoutines() {
       SELECT r.*, u.username AS "creatorName"
       FROM routines r
       INNER JOIN users u
-      ON r."creatorId" = u.id 
-      WHERE r."isPublic"= true; 
+      ON r."creatorId" = u.id; 
     
       `
     );
-      return routines;
+    const workoutStuff = await attachActivitiesToRoutines(routines);
+    console.log(workoutStuff);
+      return workoutStuff;
+
   }
   catch(error){    
     console.log(error);
@@ -80,14 +83,17 @@ async function getAllPublicRoutines() {
   try{
     const {rows:routines } = await client.query(
       `
-      SELECT routines.*, users.username AS "creatorName"
-      FROM routines
-      INNER JOIN users
-      ON routines."creatorId" = users.id
-      WHERE routines."isPublic" = true;
+      SELECT r.*, u.username AS "creatorName"
+      FROM routines r
+      INNER JOIN users u
+      ON r."creatorId" = u.id
+      WHERE r."isPublic" = true;
+    
       `
     );
-      return routines;
+    const workoutStuff = await attachActivitiesToRoutines(routines);
+      return workoutStuff;
+
   }
   catch(error){    
     console.log(error);
