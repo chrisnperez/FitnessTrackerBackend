@@ -153,11 +153,17 @@ async function getPublicRoutinesByActivity({ id }) {
       ON r."creatorId" = u.id   
       WHERE r."isPublic" = true;
       `
-    );
-    const workoutStuff = await attachActivitiesToRoutines(routines);
-      return workoutStuff;
+      );
+    
+    const workoutStuff = await attachActivitiesToRoutines(routines); 
+    const filteredRoutines = workoutStuff.filter(routine =>
+      routine.activities.some(activity => activity.id === id)
+  );
+  return filteredRoutines;
 
   }
+
+  
   catch(error){    
     console.log(error);
     throw error;
