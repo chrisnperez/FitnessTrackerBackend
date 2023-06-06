@@ -177,8 +177,6 @@ async function updateRoutine({ id, ...fields }) {
     (key, index) => `"${ key }"=$${ index + 1 }`
   ).join(', ');
 
-  console.log("this is set string", setString)
-
   if (setString.length === 0) {
     return;
   }
