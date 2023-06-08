@@ -4,7 +4,7 @@ const router = express.Router();
 // GET /api/health
 router.get('/health', async (req, res, next) => {
     try {
-        res.send({message: 'Is Healthy'})
+        res.send({message: 'We Healthy out here'})
     }
      catch(error) {
         console.log(error)

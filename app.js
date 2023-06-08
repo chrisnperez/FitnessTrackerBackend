@@ -14,12 +14,14 @@ app.use(cors());
 
 app.use('/api', apiRouter);
 
-// app.get('/products/:id', function (req, res, next) {
-//     res.json({msg: 'This is CORS-enabled for all origins!'})
-//   })
-  
-//   app.listen(80, function () {
-//     console.log('CORS-enabled web server listening on port 80')
-//   })
+app.use((_req, res, next) => {
+    res.status(404);
+    res.send("Status code 404");
+})
+
+app.use((error, req, res, next) => {
+    res.status(500);
+    res.send(error.message);
+})
 
 module.exports = app;
