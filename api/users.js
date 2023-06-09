@@ -8,7 +8,6 @@ const { JWT_SECRET } = process.env;
 
 // POST /api/users/register
 
-
 router.use((req, res, next) => {
     console.log("A request has been made to /users");
 
@@ -76,7 +75,6 @@ router.post("/login", async (req, res, next) => {
         const user = await getUser({ username, password });
 
         const token = await jwt.sign(user, process.env.JWT_SECRET);
-
         if (user) {
             res.send({
                 user: {
@@ -96,9 +94,32 @@ router.post("/login", async (req, res, next) => {
     catch ({ name, message }) {
         ({ name, message });
     }
-})
+});
 
 // GET /api/users/me
+
+router.get('/me', async (req, res, next) => {
+    const header = req.headers.authorization
+
+    try {
+        if (!header) {
+            res.status(401)
+            res.send({
+                error: 'Token is missing',
+                message: 'You must be logged in to perform this action',
+                name: 'NoTokenError'
+            })
+
+        } else {
+                const token = header.split(' ')[1];
+                const decodedUser = jwt.verify(token, JWT_SECRET);
+                res.send(decodedUser);
+            }
+
+    } catch ({ name, message }) {
+        next({ name, message })
+    }
+});
 
 // GET /api/users/:username/routines
 
