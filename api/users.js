@@ -1,6 +1,6 @@
 /* eslint-disable no-useless-catch */
 const express = require("express");
-const { getUserByUsername, createUser, getUser } = require("../db/users");
+const { getUserByUsername, createUser, getUser, getUserById } = require("../db/users");
 const router = express.Router();
 const jwt = require("jsonwebtoken");
 const { JWT_SECRET } = process.env;
@@ -17,25 +17,24 @@ router.use((req, res, next) => {
 
 router.post("/register", async (req, res, next) => {
     const { username, password } = req.body;
-    console.log(password);
 
     try {
         const _user = await getUserByUsername(username);
 
         if (_user) {
             res.send({
-              error: "UserExistError",
-              message: `User ${username} is already taken.`,
-              name: "This user already exists."
+                error: "UserExistError",
+                message: `User ${username} is already taken.`,
+                name: "This user already exists."
             });
-          }
+        }
 
         if (password.length < 8) {
             res.send({
                 error: "PasswordTooShort",
-                message: `Password Too Short!`,
+                message: "Password Too Short!",
                 name: "Password does not meet length requirement"
-              });
+            });
         }
 
         const user = await createUser({
@@ -60,44 +59,6 @@ router.post("/register", async (req, res, next) => {
         next({ name, message })
     }
 });
-
-// router.post('/register', async(req, res, next) =>{
-//   const {username, password} = req.body; 
-//   try {
-//     const _user = getUserByUsername(username);
-
-//     if (_user){
-//       next({
-//         name: 'UserExistsError',
-//         message: 'A user by that username already exists'
-//       })
-//     }
-//     const user = await  createUser({
-//       username,password
-//     });
-//     console.log(user);
-//     const token = jwt.sign({
-//       id: user.id,
-//       username
-//     }, process.env.JWT_SECRET, {
-//       expiresIn: '1w'
-//     });
-//     console.log(token);
-//     res.send({
-//       user:{
-//         id: user.id,
-//         username: user.username
-//       },
-//       message: "Thanks for signing up for our service",
-//       token
-//     });
-//   }
-//   catch ({name, message}){
-//     next({name, message})
-//   }
-// });
-
-
 
 // POST /api/users/login
 
@@ -140,5 +101,6 @@ router.post("/login", async (req, res, next) => {
 // GET /api/users/me
 
 // GET /api/users/:username/routines
+
 
 module.exports = router;
