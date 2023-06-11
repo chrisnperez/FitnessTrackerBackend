@@ -88,7 +88,7 @@ async function destroyRoutineActivity(id) {
     const {rows: [routine_activities] } = await client.query(
         `
         DELETE FROM routine_activities
-        WHERE "routineId" = $1
+        WHERE id = $1
         RETURNING *;
         `,[id]
       )   
@@ -104,14 +104,15 @@ async function destroyRoutineActivity(id) {
 
 async function canEditRoutineActivity(routineActivityId, userId) {
 
-  
   try {
-    const { rows: [ activity ] } = await client.query(`
-     SELECT * 
-     FROM routine_activities
-     WHERE id =$1
-    `,[userId]);
-    if(activity && activity.id === userId){
+    const { rows: [ routine_activities ] } = await client.query(`
+    SELECT * 
+    FROM routine_activities AS ra
+    JOIN routines r
+    ON r.id = ra."routineId"
+    WHERE ra.id =$1;
+  `, [routineActivityId]);
+    if(routine_activities.creatorId === userId){
       return true;
     }
     
@@ -121,9 +122,6 @@ async function canEditRoutineActivity(routineActivityId, userId) {
     console.log(error);
     throw error;
   }
-
-
-
 }
 
 module.exports = {
