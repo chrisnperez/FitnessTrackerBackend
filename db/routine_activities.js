@@ -28,8 +28,8 @@ async function getRoutineActivityById(id) {
       `
       SELECT ra.*
       FROM routine_activities ra
-      WHERE id= ${id}
-    `);  
+      WHERE id= $1;
+    `, [id]);  
     
     return routine_activities;
   }
@@ -47,8 +47,8 @@ async function getRoutineActivitiesByRoutine({ id }) {
       `
       SELECT ra.*
       FROM routine_activities ra
-      WHERE id= ${id}
-    `);  
+      WHERE "routineId" = $1;
+    `, [id]);  
     
     return routines;
   }

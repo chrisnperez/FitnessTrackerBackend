@@ -1,5 +1,45 @@
 const express = require('express');
 const router = express.Router();
+const jwt = require("jsonwebtoken");
+const { JWT_SECRET } = process.env;
+const { getUserById } = require("../db");
+
+
+router.use(async (req, res, next) => {
+    const prefix = "Bearer ";
+    const auth = req.header("Authorization");
+
+    try {
+        if (!auth) {
+            next()
+        } else if (auth.startsWith(prefix)) {
+            const token = auth.slice(prefix.length);
+
+            try {
+                const { id } = jwt.verify(token, JWT_SECRET);
+
+                if (id) {
+                    req.user = await getUserById(id);
+                    next();
+                }
+            }
+            catch ({ name, message }) {
+                next({
+                    name: 'AuthorizationHeaderError',
+                    message: `Authorization token must start with ${prefix}`
+                });
+            }
+        }
+    }
+    catch ({ name, message }) {
+        next({
+            name: 'AuthorizationHeaderError',
+            message: `Authorization token must start with ${prefix}`
+        });
+    }
+})
+
+
 
 // GET /api/health
 router.get('/health', async (req, res, next) => {
