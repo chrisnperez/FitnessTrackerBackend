@@ -123,45 +123,34 @@ router.get('/me', async (req, res, next) => {
 });
 
 // GET /api/users/:username/routines
-// router.get("/:username/routines", async (req, res, next) => {
-//   try {
-
-//     const { username } = req.params;
-
-//     // Retrieve the user data based on the username
-//     const user = await getUserByUsername(username);
-
-//     if (!user) {
-//       return res.status(404).json({ error: "User not found" });
-//     }
-
-//     // Retrieve the public routines for the user
-//     const routines = await getPublicRoutinesByUser(user.id);
-
-//     // Send the routines in the response
-//     res.json(routines);
-//   } catch (error) {
-//     next(error);
-//   }
-// });\
 
 router.get("/:username/routines", async (req, res, next) => {
   const { username } = req.params;
-
+  const header = req.headers.authorization;
+  let routines; 
+  
   try {
     // Retrieve the user data based on the username
     const user = await getUserByUsername(username);
-
+    
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
 
-  
-      // Otherwise, retrieve public routines
-      const routines = await getPublicRoutinesByUser(user.id);
-    
+    console.log(header)
+    routines = await getPublicRoutinesByUser({username});
 
-    res.json(routines);
+     if (header) {
+        const token = header.split(' ')[1];
+        const decodedUser = jwt.verify(token, JWT_SECRET);
+        if (decodedUser.id === user.id) {
+            routines = await getAllRoutinesByUser({username}); 
+        }
+    }
+      // Otherwise, retrieve public routines
+    //   const routines = await getPublicRoutinesByUser(user.id);
+
+    res.send(routines);
   } catch (error) {
     next(error);
   }

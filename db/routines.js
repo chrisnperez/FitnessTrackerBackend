@@ -149,17 +149,17 @@ async function getPublicRoutinesByActivity({ id }) {
       `
       SELECT r.*, u.username AS "creatorName"
       FROM routines r
-      INNER JOIN users u
-      ON r."creatorId" = u.id   
-      WHERE r."isPublic" = true;
+      INNER JOIN users u ON r."creatorId" = u.id  
+      JOIN routine_activities ON routine_activities."routineId" = r.id
+      WHERE r."isPublic" = true AND routine_activities."activityId" = $1;
       `
-      );
+      , [id]);
     
     const workoutStuff = await attachActivitiesToRoutines(routines); 
-    const filteredRoutines = workoutStuff.filter(routine =>
-      routine.activities.some(activity => activity.id === id)
-  );
-  return filteredRoutines;
+    // const filteredRoutines = workoutStuff.filter(routine =>
+    //   routine.activities.some(activity => activity.id === id));
+
+  return workoutStuff;
 
   }
 

@@ -40,7 +40,7 @@ try {
     SELECT * 
     FROM activities
     WHERE id = ${id}
-    `); 
+    `, [id]); 
   return activities;
 }
 catch(error){    
