@@ -65,7 +65,11 @@ router.get("/:activityId/routines", async (req, res, next) => {
       // Check if the activity exists
       const activity = await getActivityById(activityId);
       if (!activity) {
-         res.send({ error: "Activity not found" });
+         return res.status(404).json({          
+          error: "ActivityNotFoundError",  
+          message: "Activity " +activityId + " not found",
+          name: "ActivtyNotFound"
+       });
       }
   
       // Retrieve the public routines featuring the activity
@@ -87,7 +91,7 @@ router.patch('/:activityId', async (req, res, next) => {
         // Check if the activity exists
         const existingActivity = await getActivityById(activityId);
         if (!existingActivity) {
-            return next({
+            return res.status(404).json({
                 error: "ActivityNotFoundError",
                 message: "Activity 10000 not found",
                 name: "ActivityNotFoundError",
@@ -97,7 +101,7 @@ router.patch('/:activityId', async (req, res, next) => {
         // Check if the new name already exists for another activity
         const duplicateActivityName = await getActivityByName(name);
         if (duplicateActivityName && duplicateActivityName.id !== activityId) {
-        return next({
+        return res.status(404).json({
             error: "DuplicateActivityNameError",
             message: "An activity with name " + name + " already exists",
             name: "DuplicateActivityName",

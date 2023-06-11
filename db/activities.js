@@ -39,7 +39,7 @@ try {
   const {rows:[activities] } = await client.query(`
     SELECT * 
     FROM activities
-    WHERE id = ${id}
+    WHERE id = $1
     `, [id]); 
   return activities;
 }
