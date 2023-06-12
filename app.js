@@ -14,14 +14,18 @@ app.use(bodyParser.json());
 app.use(express.json());
 app.use('/api', apiRouter);
 
-app.use((_req, res, next) => {
+app.use("*", (_req, res, next) => {
     res.status(404);
-    res.send("Status code 404");
+    res.send({message: "Status code 404"});
 })
 
 app.use((error, req, res, next) => {
     res.status(500);
-    res.send(error.message);
+    res.send({
+        error: error.error,
+        name: error.name,
+        message: error.message
+    });
 })
 
 module.exports = app;
