@@ -1,19 +1,15 @@
  
- const requireUser = ((req, res, next) => {
+const requireUser = (req, res, next) => {
     if (!req.user) {
-        next({
-            name: "MissingUserError",
-            message: "You must be logged in to perform this action"
-        });
+      return res.status(401).json({
+        error: "UnauthorizedError",
+        message: "You must be logged in to perform this action",
+        name: "Unauthorized",
+      });
     }
-    req.user = {
-        username: req.user.username,
-        id: req.user.id,
-    };
-    
     next();
-});
-
+  };
+  
 module.exports = {
    requireUser
 };
