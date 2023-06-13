@@ -110,31 +110,33 @@ router.delete("/:routineId", requireUser, async (req, res, next) => {
 
 // POST /api/routines/:routineId/activities
 
+
 router.post("/:routineId/activities", requireUser, async (req, res, next) => {
     const { routineId } = req.params;
     const { activityId, count, duration } = req.body;
-
-  try {
-    const tempActivities = await getRoutineActivitiesByRoutine({id: routineId});
-    const foundActivity = tempActivities.filter(activity => activityId === activity.id);
-    console.log(foundActivity);
-    if (foundActivity.length) {
-        next({
-            error: "lolol",
-            message: `Activity ID ${activityId} already exists in Routine ID ${routineId}`,
-            name: "the same lolol error"
-        });
-    } else {
-        const routine_activity = await addActivityToRoutine({routineId, activityId, count, duration});
-        res.send(routine_activity);
-    }
-    
-  } catch (error) {
-    next(error)
-  }
   
+    try {
+  
+      const tempActivities = await getRoutineActivitiesByRoutine({ id: routineId });
+      const foundActivity = tempActivities.find(activity => activity.activityId === activityId);
+  
+      if (foundActivity) {
+        return res.json({
+          error: "DuplicateActivityError",
+          message: `Activity ID ${activityId} already exists in Routine ID ${routineId}`,
+          name: "DuplicateActivity",
+        });
+      }
+      else {
+        const routine_activity = await addActivityToRoutine({routineId, activityId, count, duration});
+  
+        res.send(routine_activity);
+      }
+      
+    } catch (error) {
+      next(error);
+    }
   });
-
 
 
 module.exports = router;
